@@ -33,6 +33,7 @@ class BinaryFileResponse extends Response
     protected int $maxlen = -1;
     protected bool $deleteFileAfterSend = false;
     protected int $chunkSize = 16 * 1024;
+    protected int $lengthStreamed = 0;
 
     /**
      * @param \SplFileInfo|string $file               The file to stream
@@ -101,6 +102,14 @@ class BinaryFileResponse extends Response
     public function getFile(): File
     {
         return $this->file;
+    }
+
+    /**
+     * Gets the length streamed.
+     */
+    public function getLengthStreamed(): int
+    {
+        return $this->lengthStreamed;
     }
 
     /**
@@ -331,6 +340,9 @@ class BinaryFileResponse extends Response
                     if (0 < $length) {
                         $length -= $read;
                     }
+
+                    $this->lengthStreamed += $read;
+
                     $data = substr($data, $read);
                 }
             }

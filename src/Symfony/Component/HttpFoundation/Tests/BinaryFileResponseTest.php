@@ -455,4 +455,20 @@ class BinaryFileResponseTest extends ResponseTestCase
         $string = ob_get_clean();
         $this->assertSame('foo,bar', $string);
     }
+
+    public function testItCalculatesTotalStreamSize(): void
+    {
+        $response = new BinaryFileResponse($path = __DIR__.'/File/Fixtures/test.gif');
+
+        ob_start();
+        $response->sendContent();
+        $output = ob_get_clean();
+
+        $expected = file_get_contents($path);
+        $this->assertIsString($output);
+        $this->assertIsString($expected);
+        $this->assertSame($expected, $output);
+        $this->assertSame(35, strlen($output));
+        $this->assertSame(35, $response->getLengthStreamed());
+    }
 }
